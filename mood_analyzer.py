@@ -2,12 +2,15 @@ import os
 import google.generativeai as genai
 from typing import Optional
 
+# Gemini API Key
+GEMINI_API_KEY = "AIzaSyDIK6vX0ELZn9cbf3ADKJ2-DvZm8x_3TI8"
+
 # Set up Gemini API
 def setup_gemini():
     """Set up and configure the Gemini API."""
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY", GEMINI_API_KEY)
     if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it with your Gemini API key.")
+        raise ValueError("GEMINI_API_KEY is not set. Please provide a valid Gemini API key.")
     
     genai.configure(api_key=api_key)
     return genai.GenerativeModel('gemini-pro')

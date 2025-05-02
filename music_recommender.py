@@ -125,14 +125,28 @@ def get_spotify_client():
         requests_timeout=20
     )
 
-def search_tracks_by_artist_and_keyword(sp, artist_name: str, keyword: str, limit: int = 9):
-    """Search for tracks by artist name and keyword."""
+def get_top_tracks_by_artist(sp, artist_id: str, limit: int = 15):
+    """Get top tracks for a specific artist using their Spotify ID."""
+    try:
+        print(f"Getting top tracks for artist ID: {artist_id}")
+        
+        # Use the artist's top tracks endpoint, which gives accurate official results
+        results = sp.artist_top_tracks(artist_id, country='US')
+        
+        # Make sure we don't exceed the limit
+        return results['tracks'][:limit]
+    except Exception as e:
+        print(f"Artist top tracks error: {str(e)}")
+        return []
+
+def search_tracks_by_artist_and_keyword(sp, artist_name: str, keyword: str, limit: int = 15):
+    """Search for tracks by artist name and keyword as backup method."""
     try:
         # Create a search query
-        search_query = f"artist:{artist_name} {keyword}"
+        search_query = f"artist:{artist_name}"
         print(f"Searching with query: {search_query}")
         
-        # Execute the search
+        # Execute the search - without keywords to get more accurate results
         results = sp.search(q=search_query, type="track", limit=limit)
         return results["tracks"]["items"]
     except Exception as e:
@@ -180,64 +194,43 @@ def get_music_recommendations(mood: str, limit: int = 15) -> List[Dict[str, Any]
         # Initialize Spotify client
         sp = get_spotify_client()
         
-        # Default to Relaxed if mood not found
-        if mood not in MOOD_TO_SPOTIFY_SEEDS:
-            mood = "Relaxed"
+        # Select artists based on mood
+        # For simplicity, we'll just use direct artist top tracks instead of mood filtering
+        all_tracks = []
         
-        # Get seed data for the mood
-        seed_data = MOOD_TO_SPOTIFY_SEEDS[mood]
-        
-        try:
-            # Try using recommendations API first
-            print(f"Getting recommendations for mood: {mood}")
+        # For each favorite artist, get their top tracks
+        for artist_name, artist_id in FAVORITE_ARTISTS.items():
+            print(f"Getting top tracks for {artist_name}")
+            artist_tracks = get_top_tracks_by_artist(sp, artist_id, limit=5)  # Get 5 from each artist
             
-            # Sample seeds - with fewer seeds to improve reliability
-            seed_genres = random.sample(seed_data["genres"], min(1, len(seed_data["genres"])))
-            seed_artists = random.sample(seed_data["artists"], min(1, len(seed_data["artists"])))
-            seed_tracks = random.sample(seed_data["tracks"], min(1, len(seed_data["tracks"])))
-            
-            print(f"Seeds: artists={seed_artists}, tracks={seed_tracks}, genres={seed_genres}")
-            
-            # Get recommendations
-            results = sp.recommendations(
-                seed_artists=seed_artists,
-                seed_tracks=seed_tracks,
-                seed_genres=seed_genres,
-                limit=limit
-            )
-            
-            if "tracks" in results and results["tracks"]:
-                return format_track_data(results["tracks"])
+            if artist_tracks:
+                all_tracks.extend(artist_tracks)
+                print(f"Found {len(artist_tracks)} tracks for {artist_name}")
             else:
-                raise Exception("No tracks returned from recommendations API")
-                
-        except Exception as rec_error:
-            # If recommendations API fails, use search fallback
-            print(f"Recommendation API error: {str(rec_error)}")
-            print("Falling back to direct search...")
-            
-            # Choose an artist to search
-            artist_name = random.choice(list(FAVORITE_ARTISTS.keys()))
-            keyword = random.choice(MOOD_MAPPINGS[mood])
-            
-            # Search for tracks
-            tracks = search_tracks_by_artist_and_keyword(sp, artist_name, keyword, limit)
+                # Fallback to search if top tracks endpoint fails
+                print(f"Could not get top tracks for {artist_name}, trying search...")
+                search_tracks = search_tracks_by_artist_and_keyword(sp, artist_name, "", limit=5)
+                if search_tracks:
+                    all_tracks.extend(search_tracks)
+                    print(f"Found {len(search_tracks)} tracks via search for {artist_name}")
+        
+        # If we have tracks, return them (up to the limit)
+        if all_tracks:
+            random.shuffle(all_tracks)  # Mix the artists together
+            return format_track_data(all_tracks[:limit])  # Return only up to the limit
+        
+        # If all direct methods failed, try the original keyword search
+        print("Direct artist methods failed, trying keyword search...")
+        for artist_name in FAVORITE_ARTISTS.keys():
+            # Try a basic search with the artist name only
+            tracks = search_tracks_by_artist_and_keyword(sp, artist_name, "", limit)
             
             if tracks:
                 return format_track_data(tracks)
-            else:
-                print("Search returned no results, trying one more artist...")
-                
-                # Try with a different artist
-                artist_name = random.choice([a for a in list(FAVORITE_ARTISTS.keys()) if a != artist_name])
-                tracks = search_tracks_by_artist_and_keyword(sp, artist_name, keyword, limit)
-                
-                if tracks:
-                    return format_track_data(tracks)
     
     except Exception as e:
         print(f"Error getting music recommendations: {str(e)}")
     
-    # Return some sample data in case all else fails
+    # Return empty list if all methods fail
     print("All recommendation methods failed, returning empty list")
     return []

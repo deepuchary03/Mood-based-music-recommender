@@ -83,58 +83,77 @@ if st.session_state.detected_mood:
             
             for i, track in enumerate(st.session_state.recommendations):
                 with cols[i % 3]:
-                    # Card container with shadow and hover effect
+                    # New design with album art as background and song info at the bottom
+                    image_url = track.get('image_url', '')
+                    
+                    # Create the card container
                     st.markdown(f"""
                     <div style="
                         background-color: white; 
                         border-radius: 10px; 
-                        padding: 15px; 
                         margin-bottom: 20px; 
                         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                        transition: transform 0.3s;
-                        height: 380px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
+                        overflow: hidden;
+                        height: 300px;
+                        position: relative;
                     ">
-                        <div>
-                            <h3 style="margin-top: 0; font-size: 16px; color: #191414; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
-                            <p style="color: #666; font-size: 14px; margin-top: 5px;">{track['artist']}</p>
-                        </div>
+                        <a href="{track['url']}" target="_blank" style="text-decoration: none; color: inherit;">
+                            <div style="
+                                width: 100%;
+                                height: 100%;
+                                background-image: url('{image_url}');
+                                background-size: cover;
+                                background-position: center;
+                                position: relative;
+                            ">
+                                <div style="
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    padding: 10px 15px;
+                                    background-color: rgba(0,0,0,0.7);
+                                    color: white;
+                                    font-weight: bold;
+                                    font-size: 16px;
+                                    text-align: center;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                ">
+                                    {track['name']}
+                                </div>
+                                <div style="
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    right: 0;
+                                    padding: 15px;
+                                    background-color: rgba(255,255,255,0.9);
+                                ">
+                                    <p style="margin: 0; font-size: 14px; color: #333;">{track['artist']}</p>
+                                    <div style="margin-top: 10px; text-align: center;">
+                                        <a href="{track['url']}" target="_blank" style="
+                                            display: inline-block;
+                                            text-decoration: none;
+                                            color: white;
+                                            background-color: #1DB954;
+                                            padding: 8px 15px;
+                                            border-radius: 20px;
+                                            font-size: 14px;
+                                            font-weight: bold;
+                                            transition: background-color 0.3s;
+                                        ">Listen on Spotify</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                     """, unsafe_allow_html=True)
                     
-                    # Display the album art if available
-                    if 'image_url' in track and track['image_url']:
-                        st.markdown(f"""
-                        <div style="text-align: center; margin: 10px 0;">
-                            <a href="{track['url']}" target="_blank">
-                                <img src="{track['image_url']}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-                            </a>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    
-                    # Add a preview player if available
+                    # Add a preview player if available (outside the card for better usability)
                     if 'preview_url' in track and track['preview_url']:
                         st.audio(track['preview_url'], format='audio/mp3')
-                    
-                    # Add a link to listen to the track
-                    if 'url' in track:
-                        st.markdown(f"""
-                        <div style="text-align: center; margin-top: 10px;">
-                            <a href="{track['url']}" target="_blank" style="
-                                display: inline-block;
-                                text-decoration: none;
-                                color: white;
-                                background-color: #1DB954;
-                                padding: 8px 15px;
-                                border-radius: 20px;
-                                font-size: 14px;
-                                font-weight: bold;
-                                transition: background-color 0.3s;
-                            ">Listen on Spotify</a>
-                        </div>
-                        </div>
-                        """, unsafe_allow_html=True)
         else:
             st.info("No recommendations found for this mood. Try a different mood.")
     else:

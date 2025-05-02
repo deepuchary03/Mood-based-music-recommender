@@ -145,65 +145,18 @@ if st.session_state.detected_mood:
                     # Display album name to show we're using real data
                     album_name = track.get('album_name', '')
                     
-                    # Create a cleaner approach for displaying album art
-                    st.markdown(f"""
-                    <div style="
-                        background-color: white; 
-                        border-radius: 12px; 
-                        margin-bottom: 20px; 
-                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                        overflow: hidden;
-                        height: 320px;
-                        position: relative;
-                    ">
-                        <a href="{track['url']}" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div style="padding: 20px; text-align: center;">
-                                <!-- Album Image from Spotify -->
-                                <div style="position: relative; margin-bottom: 10px;">
-                                    <img src="{image_url}" style="
-                                        width: 200px;
-                                        height: 200px;
-                                        object-fit: cover;
-                                        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-                                        border-radius: 6px;
-                                        display: inline-block;
-                                    "/>
-                                    <!-- Spotify logo indicator -->
-                                    <div style="
-                                        position: absolute;
-                                        top: 5px;
-                                        right: 5px;
-                                        width: 24px;
-                                        height: 24px;
-                                        background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/232px-Spotify_icon.svg.png');
-                                        background-size: cover;
-                                        filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
-                                    "></div>
-                                </div>
-                                
-                                <!-- Track info -->
-                                <h3 style="margin: 10px 0 5px 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
-                                <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;">{track['artist']}</p>
-                                <p style="margin: 0 0 10px 0; font-size: 12px; color: #666; font-style: italic;">Album: {album_name}</p>
-                                
-                                <!-- Listen button -->
-                                <a href="{track['url']}" target="_blank" style="
-                                    display: inline-block;
-                                    text-decoration: none;
-                                    color: white;
-                                    background-color: #1DB954;
-                                    padding: 8px 15px;
-                                    border-radius: 20px;
-                                    font-size: 14px;
-                                    font-weight: bold;
-                                    transition: background-color 0.3s;
-                                    margin-top: 5px;
-                                ">Listen on Spotify</a>
-                            </div>
-                        </a>
-                    </div>
-                    """,
-                                unsafe_allow_html=True)
+                    # Simple, direct approach to make sure album images are displayed properly
+                    st.markdown(f"### {track['name']}")
+                    st.markdown(f"**Artist:** {track['artist']}")
+                    st.markdown(f"**Album:** {album_name}")
+                    
+                    # Display the album image directly using Streamlit's image component
+                    if image_url:
+                        st.image(image_url, width=200)
+                        
+                    # Link to Spotify
+                    st.markdown(f"[Listen on Spotify]({track['url']})")
+                    st.markdown("---")
 
                     # Add a preview player if available (outside the card for better usability)
                     if 'preview_url' in track and track['preview_url']:

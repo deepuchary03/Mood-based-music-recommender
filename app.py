@@ -75,15 +75,22 @@ moods = [
 # Add direct inline styling for the selectbox
 st.markdown("""
 <style>
-    /* Force selectbox to have dark text on light background */
-    .st-emotion-cache-1xw8zd0, .st-emotion-cache-10oheav, .st-emotion-cache-96e8e5 {color: black !important; background-color: #e0e0e0 !important;}
-    .st-emotion-cache-1qg75ux {color: black !important; background-color: #e0e0e0 !important;}
-    .stSelectbox > div > div {background-color: #e0e0e0 !important;}
-    div[data-baseweb="select"] > div {background-color: #e0e0e0 !important;}
+    /* Force selectbox to have light text on dark background */
+    div[data-baseweb="select"] {background-color: #212121 !important; border-color: #333 !important;}
+    div[data-baseweb="select"] > div {background-color: #212121 !important;}
+    div[data-baseweb="select"] div {color: white !important;}
+    div[data-baseweb="select"] span {color: white !important;}
+    div[data-baseweb="popover"] {background-color: #212121 !important;}
+    div[role="listbox"] {background-color: #212121 !important;}
+    div[role="option"] {background-color: #212121 !important; color: white !important;}
+    div[role="option"]:hover {background-color: #333333 !important;}
     
-    /* Also style the dropdown options */
-    .st-emotion-cache-eczf16 {color: black !important; background-color: #e0e0e0 !important;}
-    .st-emotion-cache-9aoz2h {color: black !important; background-color: #f5f5f5 !important;}
+    /* Additional selectors to ensure text visibility */
+    .st-emotion-cache-16txnqn {color: white !important;}
+    .st-emotion-cache-1xw8zd0 {color: white !important; background-color: #212121 !important;}
+    .st-emotion-cache-1offfbd p {color: white !important;}
+    .st-emotion-cache-10oheav {color: white !important;}
+    .st-emotion-cache-1qg75ux {color: white !important; background-color: #212121 !important;}
 </style>
 """,
             unsafe_allow_html=True)
@@ -160,23 +167,23 @@ if st.session_state.detected_mood:
                     
                     # Create a styled card with larger images and consistent dimensions
                     st.markdown(f"""
-                    <div style="background-color: #121212; border-radius: 10px; padding: 0; margin-bottom: 20px; color: white; height: 350px; overflow: hidden;">
-                        <div style="display: flex; flex-direction: column; height: 100%;">
-                            <!-- Larger album image with fixed dimensions -->
-                            <div style="height: 60%; width: 100%; overflow: hidden; position: relative;">
-                                <img src="{image_url}" style="width: 100%; height: 100%; object-fit: cover;" alt="Album Cover">
+                    <div style="background-color: #121212; border-radius: 10px; padding: 0; margin-bottom: 20px; color: white; overflow: hidden;">
+                        <div style="display: flex; flex-direction: column;">
+                            <!-- Square album image with fixed dimensions -->
+                            <div style="width: 100%; padding-bottom: 100%; position: relative; overflow: hidden;">
+                                <img src="{image_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" alt="Album Cover">
                                 <div style="position: absolute; top: 10px; right: 10px; background-color: rgba(0,0,0,0.7); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/232px-Spotify_icon.svg.png" style="width: 20px; height: 20px;">
                                 </div>
                             </div>
-                            <!-- Track info in fixed height container -->
-                            <div style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <!-- Track info in fixed height container - consistent 150px height -->
+                            <div style="padding: 15px; height: 150px; display: flex; flex-direction: column; justify-content: space-between;">
                                 <div>
                                     <h3 style="margin: 0 0 10px 0; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
                                     <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Artist:</strong> {track['artist']}</p>
                                     <p style="margin: 0; font-size: 14px; color: #aaa;"><strong>Album:</strong> {album_name}</p>
                                 </div>
-                                <div style="margin-top: 15px;">
+                                <div>
                                     <a href="{track['url']}" target="_blank" style="
                                         display: inline-block;
                                         text-decoration: none;

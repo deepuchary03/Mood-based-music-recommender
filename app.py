@@ -118,7 +118,7 @@ if st.session_state.detected_mood:
                     
                     # Add a link to listen to the track
                     if 'url' in track:
-                        st.markdown(f"[Listen on Last.fm]({track['url']})")
+                        st.markdown(f"[Listen on Deezer]({track['url']})")
                     
                     st.markdown("---")
         else:
@@ -137,7 +137,7 @@ with st.expander("How do the recommendations work?"):
     
     2. **Music Matching**:
        - We match your mood to relevant music genres and keywords.
-       - We then search for top tracks that match these criteria using the Last.fm API.
+       - We then search for top tracks that match these criteria using the Deezer API.
     
     3. **Recommendation Display**:
        - We display a selection of tracks that best match your current emotional state.

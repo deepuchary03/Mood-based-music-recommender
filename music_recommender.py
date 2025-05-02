@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 
 # Define mood to genre/tag mappings
 MOOD_MAPPINGS = {
-    "Happy": ["pop", "happy", "feel good", "upbeat", "cheerful"],
+    "Happy": ["pop", "happy", "feel good", "disco", "cheerful"],
     "Energetic": ["rock", "dance", "electronic", "workout", "energetic"],
     "Relaxed": ["chill", "ambient", "acoustic", "relaxing", "mellow"],
     "Calm": ["classical", "instrumental", "ambient", "meditation", "piano"],
@@ -18,9 +18,25 @@ MOOD_MAPPINGS = {
     "Angry": ["metal", "hard rock", "punk", "aggressive", "intense"]
 }
 
+# Map moods to Deezer genre IDs
+MOOD_TO_DEEZER_GENRE = {
+    "Happy": [132, 116, 165],  # Pop, Party, Disco
+    "Energetic": [152, 113, 106],  # Rock, Dance, Electro
+    "Relaxed": [98, 129, 75],  # Chill, Ambient, Acoustic
+    "Calm": [98, 16, 84],  # Ambient, Classical, Piano
+    "Sad": [153, 85, 169],  # Blues, Alternative, Soul & Funk
+    "Anxious": [464, 85, 40],  # Electro, Alternative, Indie
+    "Focused": [98, 84, 116],  # Ambient, Piano, Instrumental
+    "Romantic": [169, 153, 116],  # Soul & Funk, Blues, R&B
+    "Nostalgic": [466, 144, 98],  # Folk, 80s, Ambient
+    "Excited": [113, 116, 106],  # Dance, Party, Electro
+    "Sleepy": [98, 16, 84],  # Ambient, Classical, Piano 
+    "Angry": [152, 464, 173]  # Rock, Metal, Punk
+}
+
 def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]:
     """
-    Get music recommendations based on the detected mood using Last.fm API.
+    Get music recommendations based on the detected mood using Deezer API.
     
     Args:
         mood: A string representing the user's mood.
@@ -29,48 +45,51 @@ def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]
     Returns:
         A list of dictionaries containing music recommendations.
     """
-    # Get tags related to the mood
-    if mood not in MOOD_MAPPINGS:
+    # Get genres related to the mood
+    if mood not in MOOD_TO_DEEZER_GENRE:
         mood = "Relaxed"  # Default to relaxed if mood is not found
     
-    tags = MOOD_MAPPINGS[mood]
+    # Get genre IDs for this mood
+    genre_ids = MOOD_TO_DEEZER_GENRE[mood]
     
-    # Randomly select two tags for variety
-    selected_tags = random.sample(tags, min(2, len(tags)))
-    tag_string = ",".join(selected_tags)
+    # Randomly select one genre ID for variety
+    selected_genre = random.choice(genre_ids)
     
-    # Last.fm API endpoint and parameters
-    url = "https://ws.audioscrobbler.com/2.0/"
-    
-    # API parameters
-    params = {
-        "method": "tag.gettoptracks",
-        "tag": tag_string,
-        "api_key": "a0a150c8ac3069e94e9cc6d37ef41f29",  # This is a public API key for Last.fm
-        "format": "json",
-        "limit": 50  # Get 50 tracks, then we'll sample from them
-    }
+    # Deezer API endpoint for chart tracks by genre
+    url = f"https://api.deezer.com/chart/{selected_genre}/tracks"
     
     try:
         # Make the API request
-        response = requests.get(url, params=params)
+        response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         
         data = response.json()
         
         # Extract track information
-        tracks = data.get("tracks", {}).get("track", [])
+        tracks = data.get("data", [])
         
-        if not tracks:
-            # Fallback to a different API method if no tracks found
-            params["method"] = "tag.gettoptracks"
-            params["tag"] = selected_tags[0] if selected_tags else "chill"
+        if not tracks and len(genre_ids) > 1:
+            # Try a different genre if the first one didn't work
+            backup_genres = [g for g in genre_ids if g != selected_genre]
+            backup_genre = random.choice(backup_genres)
+            backup_url = f"https://api.deezer.com/chart/{backup_genre}/tracks"
             
-            response = requests.get(url, params=params)
+            response = requests.get(backup_url)
             response.raise_for_status()
             
             data = response.json()
-            tracks = data.get("tracks", {}).get("track", [])
+            tracks = data.get("data", [])
+        
+        # If still no tracks, try a search with keyword from mood mappings
+        if not tracks:
+            keyword = random.choice(MOOD_MAPPINGS[mood])
+            search_url = f"https://api.deezer.com/search?q={keyword}&limit=30"
+            
+            response = requests.get(search_url)
+            response.raise_for_status()
+            
+            data = response.json()
+            tracks = data.get("data", [])
         
         # Randomly select a subset of tracks
         if len(tracks) > limit:
@@ -79,18 +98,15 @@ def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]
         # Format the recommendations
         recommendations = []
         for track in tracks:
-            # Extract the medium-sized image URL if available
+            # Get album image if available
             image_url = None
-            if "image" in track:
-                for img in track["image"]:
-                    if img["size"] == "medium" and "#text" in img and img["#text"]:
-                        image_url = img["#text"]
-                        break
+            if "album" in track and "cover_medium" in track["album"]:
+                image_url = track["album"]["cover_medium"]
             
             recommendations.append({
-                "name": track.get("name", "Unknown Track"),
+                "name": track.get("title", "Unknown Track"),
                 "artist": track.get("artist", {}).get("name", "Unknown Artist"),
-                "url": track.get("url", ""),
+                "url": track.get("link", ""),
                 "image_url": image_url
             })
         

@@ -18,8 +18,21 @@ st.markdown("""
     .description {font-size: 1.2em; text-align: center; margin-bottom: 2em;}
     .stButton>button {background-color: #1DB954; color: white; border: none; padding: 0.5em 2em; border-radius: 30px;}
     .stButton>button:hover {background-color: #14943E;}
+    
+    /* Selectbox styling */
     div.stSelectbox > div > div > div {background-color: white; border-radius: 10px;}
     div.stSelectbox > div > div > div:hover {border-color: #1DB954;}
+    div.stSelectbox select option {color: black !important;}
+    div.stSelectbox select {color: #191414 !important;}
+    
+    /* Make sure selected text is visible */
+    .css-10oheav {color: #191414 !important;}
+    .css-1b0udgb {color: #191414 !important;}
+    .st-bq {color: #191414 !important;}
+    .st-br {color: #191414 !important;}
+    .st-bs {color: #191414 !important;}
+    .st-bt {color: #191414 !important;}
+    
     .footer {text-align: center; margin-top: 2em; color: #555;}
     .st-bd {border-color: #1DB954 !important;}
 </style>
@@ -43,6 +56,21 @@ moods = [
     "Sad", "Anxious", "Focused", "Romantic",
     "Nostalgic", "Excited", "Sleepy", "Angry"
 ]
+
+# Add direct inline styling for the selectbox
+st.markdown("""
+<style>
+    /* Force selectbox to have dark text on light background */
+    .st-emotion-cache-1xw8zd0, .st-emotion-cache-10oheav, .st-emotion-cache-96e8e5 {color: black !important; background-color: #e0e0e0 !important;}
+    .st-emotion-cache-1qg75ux {color: black !important; background-color: #e0e0e0 !important;}
+    .stSelectbox > div > div {background-color: #e0e0e0 !important;}
+    div[data-baseweb="select"] > div {background-color: #e0e0e0 !important;}
+    
+    /* Also style the dropdown options */
+    .st-emotion-cache-eczf16 {color: black !important; background-color: #e0e0e0 !important;}
+    .st-emotion-cache-9aoz2h {color: black !important; background-color: #f5f5f5 !important;}
+</style>
+""", unsafe_allow_html=True)
 
 selected_mood = st.selectbox("Choose your current mood:", [""] + moods, index=0)
 

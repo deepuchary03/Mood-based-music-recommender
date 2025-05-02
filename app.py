@@ -127,8 +127,9 @@ if st.session_state.detected_mood:
     # Display recommendations
     if st.session_state.recommendations:
         if len(st.session_state.recommendations) > 0:
-            # Create a grid layout for recommendations
+            # Create a grid layout for recommendations - 3 columns
             cols = st.columns(3)
+            st.write(f"Showing {len(st.session_state.recommendations)} recommendations for your {mood} mood")
 
             for i, track in enumerate(st.session_state.recommendations):
                 with cols[i % 3]:
@@ -141,15 +142,18 @@ if st.session_state.detected_mood:
                         image_url = "https://developer.spotify.com/assets/branding-guidelines/icon3@2x.png"
                         st.warning(f"Could not load album artwork for {track['name']}")
                     
+                    # Display album name to show we're using real data
+                    album_name = track.get('album_name', '')
+                    
                     # Create the card container with album art from Spotify
                     st.markdown(f"""
                     <div style="
                         background-color: white; 
-                        border-radius: 10px; 
+                        border-radius: 12px; 
                         margin-bottom: 20px; 
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                         overflow: hidden;
-                        height: 300px;
+                        height: 320px;
                         position: relative;
                     ">
                         <a href="{track['url']}" target="_blank" style="text-decoration: none; color: inherit;">
@@ -166,7 +170,7 @@ if st.session_state.detected_mood:
                                     top: 0;
                                     left: 0;
                                     right: 0;
-                                    padding: 10px 15px;
+                                    padding: 12px 15px;
                                     background-color: rgba(0,0,0,0.7);
                                     color: white;
                                     font-weight: bold;
@@ -186,7 +190,8 @@ if st.session_state.detected_mood:
                                     padding: 15px;
                                     background-color: rgba(255,255,255,0.9);
                                 ">
-                                    <p style="margin: 0; font-size: 14px; color: #333;">{track['artist']}</p>
+                                    <p style="margin: 0 0 5px 0; font-size: 15px; color: #333; font-weight: 500;">{track['artist']}</p>
+                                    <p style="margin: 0 0 10px 0; font-size: 13px; color: #666; font-style: italic;">Album: {album_name}</p>
                                     <div style="margin-top: 10px; text-align: center;">
                                         <a href="{track['url']}" target="_blank" style="
                                             display: inline-block;
@@ -201,6 +206,16 @@ if st.session_state.detected_mood:
                                         ">Listen on Spotify</a>
                                     </div>
                                 </div>
+                                <div style="
+                                    position: absolute; 
+                                    top: 10px; 
+                                    right: 10px; 
+                                    width: 24px; 
+                                    height: 24px; 
+                                    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/232px-Spotify_icon.svg.png');
+                                    background-size: cover;
+                                    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+                                "></div>
                             </div>
                         </a>
                     </div>

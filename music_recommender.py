@@ -145,13 +145,15 @@ def format_track_data(tracks):
     
     for track in tracks:
         try:
-            # Get album image
+            # Get the highest quality album image
             image_url = None
             if track["album"]["images"] and len(track["album"]["images"]) > 0:
-                if len(track["album"]["images"]) > 1:
-                    image_url = track["album"]["images"][1]["url"]
-                else:
-                    image_url = track["album"]["images"][0]["url"]
+                # Spotify returns images in order of size (largest first)
+                # Get the largest image for best quality
+                image_url = track["album"]["images"][0]["url"]
+                print(f"Found album image for '{track['name']}': {image_url}")
+            else:
+                print(f"No album image found for track: {track['name']}")
             
             # Get artist name
             artist_name = track["artists"][0]["name"] if track["artists"] else "Unknown Artist"
@@ -162,14 +164,17 @@ def format_track_data(tracks):
                 "artist": artist_name,
                 "url": track["external_urls"]["spotify"] if "external_urls" in track and "spotify" in track["external_urls"] else "",
                 "image_url": image_url,
-                "preview_url": track.get("preview_url", None)
+                "preview_url": track.get("preview_url", None),
+                "album_name": track["album"]["name"] if "album" in track else ""
             })
         except Exception as e:
             print(f"Error formatting track: {str(e)}")
     
+    # Print a summary
+    print(f"Formatted {len(recommendations)} tracks from Spotify")
     return recommendations
 
-def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]:
+def get_music_recommendations(mood: str, limit: int = 15) -> List[Dict[str, Any]]:
     """Get music recommendations based on mood."""
     try:
         # Initialize Spotify client

@@ -13,7 +13,7 @@ def setup_gemini():
         raise ValueError("GEMINI_API_KEY is not set. Please provide a valid Gemini API key.")
     
     genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-pro')
+    return genai.GenerativeModel('gemini-1.5-pro')
 
 def analyze_mood(journal_text: str) -> str:
     """

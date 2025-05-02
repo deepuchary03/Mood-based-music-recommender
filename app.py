@@ -118,7 +118,11 @@ if st.session_state.detected_mood:
                     
                     # Add a link to listen to the track
                     if 'url' in track:
-                        st.markdown(f"[Listen on Deezer]({track['url']})")
+                        st.markdown(f"[Listen on Spotify]({track['url']})")
+                        
+                    # Add a preview player if available
+                    if 'preview_url' in track and track['preview_url']:
+                        st.audio(track['preview_url'], format='audio/mp3')
                     
                     st.markdown("---")
         else:
@@ -137,7 +141,7 @@ with st.expander("How do the recommendations work?"):
     
     2. **Music Matching**:
        - We match your mood to relevant music genres and keywords.
-       - We then search for top tracks that match these criteria using the Deezer API.
+       - We then search for top tracks that match these criteria using the Spotify API.
     
     3. **Recommendation Display**:
        - We display a selection of tracks that best match your current emotional state.

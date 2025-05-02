@@ -114,30 +114,30 @@ if st.session_state.detected_mood:
     st.markdown("---")
     st.header("Your Favorite Artists")
     
-    # Artist images and Spotify IDs (using more reliable image URLs)
+    # Simple emoji approach for artists (much more reliable than external images)
     artist_info = {
         "Taylor Swift": {
-            "image": "https://www.billboard.com/wp-content/uploads/2022/11/taylor-swift-2022-billboard-espanol-power-list-billboard-espanol-1548.jpg",
+            "emoji": "👩‍🎤",
             "id": "06HL4z0CvFAxyc27GXpf02"
         },
         "Selena Gomez": {
-            "image": "https://media1.popsugar-assets.com/files/thumbor/hnVKqXE-xPM5bi3w8RQLqFCDw_E/475x60:1974x1559/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/09/09/023/n/1922398/9f849ffa5d76e13d154137.01128738_/i/Selena-Gomez.jpg",
+            "emoji": "👩‍🎤", 
             "id": "0C8ZW7ezQVs4URX5aX7Kqx"
         },
         "Ed Sheeran": {
-            "image": "https://www.rollingstone.com/wp-content/uploads/2021/08/ed-sheeran-new-album.jpg",
+            "emoji": "👨‍🎤",
             "id": "6eUKZXaKkcviH0Ku9w2n3V"
         },
         "Justin Bieber": {
-            "image": "https://www.rollingstone.com/wp-content/uploads/2021/03/Justin-Bieber-1.jpg",
+            "emoji": "👨‍🎤",
             "id": "1uNFoZAHBGtllmzznpCI3s"
         },
         "Alan Walker": {
-            "image": "https://edm.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTU5NDY5ODMxOTk0MzcyODMx/alan-walker-supplied-press-photo.jpg",
+            "emoji": "👨‍🎤",
             "id": "7vk5e3vY1uw9plTHJAMwjN"
         },
         "The Weeknd": {
-            "image": "https://www.rollingstone.com/wp-content/uploads/2020/09/TheWeeknd.jpg",
+            "emoji": "👨‍🎤",
             "id": "1Xyo4u8uXC1ZmMpatF05PJ"
         }
     }
@@ -147,14 +147,9 @@ if st.session_state.detected_mood:
     
     for i, artist in enumerate(featured_artists):
         with artist_cols[i]:
-            # More reliable approach using Streamlit's components
-            try:
-                st.image(artist_info[artist]['image'], width=80)
-            except:
-                # Fallback to a generic music icon if image loading fails
-                st.write("🎵")
-                
-            st.write(f"**{artist}**")
+            # Display artist emoji (much more reliable than external images)
+            st.write(f"{artist_info[artist]['emoji']}")
+            st.markdown(f"**{artist}**")
             
             # Add Spotify link
             spotify_url = f"https://open.spotify.com/artist/{artist_info[artist]['id']}"

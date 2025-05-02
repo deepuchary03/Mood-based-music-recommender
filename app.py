@@ -163,30 +163,30 @@ if st.session_state.detected_mood:
     st.markdown("<hr style='margin: 30px 0; height: 2px; background: linear-gradient(to right, #1DB954, #191414);'>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>Your Favorite Artists</h3>", unsafe_allow_html=True)
     
-    # Artist images and Spotify IDs
+    # Artist images and Spotify IDs - using more reliable image URLs
     artist_info = {
         "Taylor Swift": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb5a00969a4698c3bc19d84821",
+            "image": "https://i.scdn.co/image/ab67616d00001e02fc8d2860cad9985cc72eb396", # Midnights album cover
             "id": "06HL4z0CvFAxyc27GXpf02"
         },
         "Selena Gomez": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eba5205abffd84341e5842059d",
+            "image": "https://i.scdn.co/image/ab67616d00001e02e9b9b3cf5254a02b0b7c7f6a", # Revelación cover
             "id": "0C8ZW7ezQVs4URX5aX7Kqx"
         },
         "Ed Sheeran": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb3bcef85e105dfc42399ef0af",
+            "image": "https://i.scdn.co/image/ab67616d00001e023b247c6cd4e4f4b3879e573c", # Equals album cover
             "id": "6eUKZXaKkcviH0Ku9w2n3V"
         },
         "Justin Bieber": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb8ae7f2aaa9817a704a87ea36",
+            "image": "https://i.scdn.co/image/ab67616d00001e0299e3674fc4edc87f8c4c1eae", # Justice album cover
             "id": "1uNFoZAHBGtllmzznpCI3s"
         },
         "Alan Walker": {
-            "image": "https://i.scdn.co/image/ab6761610000e5ebc02d416c309a68b04dc94576",
+            "image": "https://i.scdn.co/image/ab67616d00001e02dd91c476aa94261350710de6", # Faded single cover
             "id": "7vk5e3vY1uw9plTHJAMwjN"
         },
         "The Weeknd": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb214f3cf1cbe7139c1e26ffbb",
+            "image": "https://i.scdn.co/image/ab67616d00001e026ab4d48aecbe8c8f5a4e49cf", # Starboy album cover
             "id": "1Xyo4u8uXC1ZmMpatF05PJ"
         }
     }

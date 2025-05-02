@@ -98,8 +98,8 @@ if st.session_state.detected_mood:
                         justify-content: space-between;
                     ">
                         <div>
-                            <h3 style="margin-top: 0; font-size: 16px; color: #191414; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
-                            <p style="color: #666; font-size: 14px; margin-top: 5px;">{track['artist']}</p>
+                            <h3 style="margin-top: 0; font-size: 16px; color: #191414; font-weight: bold; overflow-wrap: break-word;">{track['name']}</h3>
+                            <p style="color: #666; font-size: 14px; margin-top: 5px; font-style: italic;">{track['artist']}</p>
                         </div>
                     """, unsafe_allow_html=True)
                     
@@ -144,30 +144,30 @@ if st.session_state.detected_mood:
     st.markdown("<hr style='margin: 30px 0; height: 2px; background: linear-gradient(to right, #1DB954, #191414);'>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>Your Favorite Artists</h3>", unsafe_allow_html=True)
     
-    # Artist images and Spotify IDs
+    # Artist images and Spotify IDs (using more reliable image URLs)
     artist_info = {
         "Taylor Swift": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb5a00969a4698c3bc19d84821",
+            "image": "https://www.billboard.com/wp-content/uploads/2022/11/taylor-swift-2022-billboard-espanol-power-list-billboard-espanol-1548.jpg",
             "id": "06HL4z0CvFAxyc27GXpf02"
         },
         "Selena Gomez": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eba5205abffd84341e5842059d",
+            "image": "https://media1.popsugar-assets.com/files/thumbor/hnVKqXE-xPM5bi3w8RQLqFCDw_E/475x60:1974x1559/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/09/09/023/n/1922398/9f849ffa5d76e13d154137.01128738_/i/Selena-Gomez.jpg",
             "id": "0C8ZW7ezQVs4URX5aX7Kqx"
         },
         "Ed Sheeran": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb3bcef85e105dfc42399ef0af",
+            "image": "https://www.rollingstone.com/wp-content/uploads/2021/08/ed-sheeran-new-album.jpg",
             "id": "6eUKZXaKkcviH0Ku9w2n3V"
         },
         "Justin Bieber": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb8ae7f2aaa9817a704a87ea36",
+            "image": "https://www.rollingstone.com/wp-content/uploads/2021/03/Justin-Bieber-1.jpg",
             "id": "1uNFoZAHBGtllmzznpCI3s"
         },
         "Alan Walker": {
-            "image": "https://i.scdn.co/image/ab6761610000e5ebc02d416c309a68b04dc94576",
+            "image": "https://edm.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTU5NDY5ODMxOTk0MzcyODMx/alan-walker-supplied-press-photo.jpg",
             "id": "7vk5e3vY1uw9plTHJAMwjN"
         },
         "The Weeknd": {
-            "image": "https://i.scdn.co/image/ab6761610000e5eb214f3cf1cbe7139c1e26ffbb",
+            "image": "https://www.rollingstone.com/wp-content/uploads/2020/09/TheWeeknd.jpg",
             "id": "1Xyo4u8uXC1ZmMpatF05PJ"
         }
     }

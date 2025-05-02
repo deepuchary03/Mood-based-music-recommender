@@ -145,17 +145,24 @@ if st.session_state.detected_mood:
                     # Display album name to show we're using real data
                     album_name = track.get('album_name', '')
                     
-                    # Simple, direct approach to make sure album images are displayed properly
-                    st.markdown(f"### {track['name']}")
-                    st.markdown(f"**Artist:** {track['artist']}")
-                    st.markdown(f"**Album:** {album_name}")
+                    col1, col2 = st.columns([1, 1])
                     
-                    # Display the album image directly using Streamlit's image component
-                    if image_url:
-                        st.image(image_url, width=200)
-                        
-                    # Link to Spotify
-                    st.markdown(f"[Listen on Spotify]({track['url']})")
+                    with col1:
+                        # Display the album image directly with proper error handling
+                        if image_url:
+                            try:
+                                st.image(image_url, width=150, caption="Album Cover")
+                            except Exception as e:
+                                st.error(f"Image error: {str(e)}")
+                                st.markdown(f"[View album cover]({image_url})")
+                    
+                    with col2:
+                        # Track info
+                        st.markdown(f"### {track['name']}")
+                        st.markdown(f"**Artist:** {track['artist']}")
+                        st.markdown(f"**Album:** {album_name}")
+                        st.markdown(f"[Listen on Spotify]({track['url']})")
+                    
                     st.markdown("---")
 
                     # Add a preview player if available (outside the card for better usability)

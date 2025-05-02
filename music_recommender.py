@@ -103,6 +103,8 @@ MOOD_TO_SPOTIFY_SEEDS = {
         "tracks": [POPULAR_TRACKS["Alan Walker"][1], POPULAR_TRACKS["The Weeknd"][0]]
     }
 }
+from dotenv import load_dotenv
+load_dotenv()
 
 # Initialize Spotify client
 def get_spotify_client():

@@ -9,48 +9,147 @@ st.set_page_config(
     layout="wide",
 )
 
+st.markdown("""
+<style>
+    /* Hide the Streamlit menu bar and make it transparent */
+    [data-testid="stToolbar"] {
+        background-color: transparent !important;
+        height: 0 !important;
+        visibility: hidden !important;
+    }
+
+    /* Ensure no padding or margin around the toolbar */
+    [data-testid="stToolbar"]::before {
+        content: '';
+        display: none;
+    }
+
+    /* Set a consistent dark background for the entire app */
+    .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stSidebarContent"] {
+        background-color: #121212 !important;
+        color: white !important;
+    }
+
+    /* Remove any white space or padding at the top of the app */
+    [data-testid="stDecoration"] {
+        background-color: transparent !important;
+    }
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+        height: 0 !important;
+        visibility: hidden !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Custom CSS - Spotify themed dark mode
 st.markdown("""
 <style>
-    .main {background-color: #121212 !important;}
-    .stApp {max-width: 1200px; margin: 0 auto;}
-    h1 {color: #1DB954 !important; text-align: center; margin-bottom: 0.5em;}
-    h2, h3, h4, h5 {color: white !important;}
-    .description {font-size: 1.2em; text-align: center; margin-bottom: 2em; color: #DDDDDD !important;}
-    .stButton>button {background-color: #1DB954 !important; color: white !important; border: none !important; padding: 0.5em 2em !important; border-radius: 30px !important;}
-    .stButton>button:hover {background-color: #14943E !important;}
-    
-    /* Selectbox styling - dark theme */
-    div.stSelectbox > div > div > div {background-color: #212121 !important; border-radius: 10px; color: white !important;}
-    div.stSelectbox > div > div > div:hover {border-color: #1DB954 !important;}
-    div.stSelectbox select option {color: white !important;}
-    div.stSelectbox label {color: white !important;}
-    div[data-baseweb="select"] {background-color: #212121 !important;}
-    div[data-baseweb="select"] span {color: white !important;}
-    div[role="listbox"] {background-color: #212121 !important;}
-    div[role="option"] {background-color: #212121 !important;}
-    div[role="option"]:hover {background-color: #333333 !important;}
-    
+    /* Set a consistent dark background for the entire app */
+    .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stSidebarContent"] {
+        background-color: #121212 !important;
+        color: white !important;
+    }
+
+    /* Set consistent text colors */
+    h1, h2, h3, h4, h5, p, label, div.stMarkdown p {
+        color: #DDDDDD !important;
+    }
+
+    /* Style buttons */
+    .stButton>button {
+        background-color: #1DB954 !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.5em 2em !important;
+        border-radius: 30px !important;
+    }
+    .stButton>button:hover {
+        background-color: #14943E !important;
+    }
+
+    /* Style selectbox and dropdowns */
+    div[data-baseweb="select"] {
+        background-color: #212121 !important; /* Dark background */
+        border-color: #333 !important; /* Dark border */
+    }
+    div[data-baseweb="select"] > div {
+        background-color: #212121 !important; /* Dark background */
+    }
+    div[data-baseweb="select"] div {
+        color: white !important; /* White text */
+    }
+    div[data-baseweb="select"] span {
+        color: white !important; /* White text */
+    }
+    div[data-baseweb="popover"] {
+        background-color: #212121 !important; /* Dark background for dropdown */
+    }
+    div[role="listbox"] {
+        background-color: #212121 !important; /* Dark background for options */
+    }
+    div[role="option"] {
+        background-color: #212121 !important; /* Dark background for each option */
+        color: white !important; /* White text for each option */
+    }
+    div[role="option"]:hover {
+        background-color: #333333 !important; /* Slightly lighter background on hover */
+    }
+
     /* Fix text visibility in dark mode */
-    .css-10oheav {color: white !important;}
-    .css-1b0udgb {color: white !important;}
-    p {color: #DDDDDD !important;}
-    div.stMarkdown p {color: #DDDDDD !important;}
-    .css-1aumxhk {background-color: #121212 !important;}
-    label {color: white !important;}
-    [data-testid="stSidebarContent"] {background-color: #121212 !important;}
-    [data-testid="stAppViewContainer"] {background-color: #121212 !important;}
-    [data-baseweb="select"] > div {background-color: #212121 !important; color: white !important;}
-    .st-bq {color: #191414 !important;}
-    .st-br {color: #191414 !important;}
-    .st-bs {color: #191414 !important;}
-    .st-bt {color: #191414 !important;}
-    
-    .footer {text-align: center; margin-top: 2em; color: #555;}
-    .st-bd {border-color: #1DB954 !important;}
+    .css-10oheav, .css-1b0udgb, .css-1aumxhk, .st-emotion-cache-16txnqn, .st-emotion-cache-1xw8zd0, .st-emotion-cache-1offfbd p, .st-emotion-cache-10oheav, .st-emotion-cache-1qg75ux {
+        color: white !important;
+        background-color: #121212 !important;
+    }
+
+    /* Footer styling */
+    .footer {
+        text-align: center;
+        margin-top: 2em;
+        color: #555;
+    }
+
+    /* Horizontal rule styling */
+    hr {
+        margin: 25px 0;
+        height: 3px;
+        background: linear-gradient(to right, #1DB954, #191414);
+        border: none;
+    }
 </style>
-""",
-            unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+    /* Hide the Streamlit menu bar and make it transparent */
+    [data-testid="stToolbar"] {
+        background-color: transparent !important;
+        height: 0 !important;
+        visibility: hidden !important;
+    }
+
+    /* Ensure no padding or margin around the toolbar */
+    [data-testid="stToolbar"]::before {
+        content: '';
+        display: none;
+    }
+
+    /* Set a consistent dark background for the entire app */
+    .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stSidebarContent"] {
+        background-color: #121212 !important;
+        color: white !important;
+    }
+
+    /* Remove any white space or padding at the top of the app */
+    [data-testid="stDecoration"] {
+        background-color: transparent !important;
+    }
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+        height: 0 !important;
+        visibility: hidden !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # App title and description with emoji
 st.markdown("<h1>🎵 Mood-Based Music Recommender</h1>", unsafe_allow_html=True)
@@ -149,7 +248,9 @@ if st.session_state.detected_mood:
         if len(st.session_state.recommendations) > 0:
             # Create a grid layout for recommendations - 3 columns
             cols = st.columns(3)
-            st.write(f"Showing {len(st.session_state.recommendations)} recommendations for your {mood} mood")
+            st.write(
+                f"Showing {len(st.session_state.recommendations)} recommendations for your {mood} mood"
+            )
 
             for i, track in enumerate(st.session_state.recommendations):
                 with cols[i % 3]:
@@ -160,11 +261,13 @@ if st.session_state.detected_mood:
                     if not image_url or image_url.strip() == "":
                         # Use a Spotify-themed placeholder if no image available
                         image_url = "https://developer.spotify.com/assets/branding-guidelines/icon3@2x.png"
-                        st.warning(f"Could not load album artwork for {track['name']}")
-                    
+                        st.warning(
+                            f"Could not load album artwork for {track['name']}"
+                        )
+
                     # Display album name to show we're using real data
                     album_name = track.get('album_name', '')
-                    
+
                     # Create a styled card with larger images and consistent dimensions
                     st.markdown(f"""
                     <div style="background-color: #121212; border-radius: 10px; padding: 0; margin-bottom: 20px; color: white; overflow: hidden;">
@@ -202,7 +305,8 @@ if st.session_state.detected_mood:
                             </div>
                         </div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """,
+                                unsafe_allow_html=True)
 
                     # Add a preview player if available (outside the card for better usability)
                     if 'preview_url' in track and track['preview_url']:
@@ -289,12 +393,7 @@ st.markdown(
 # Custom footer with profile image
 st.markdown("""
 <div style="text-align: center; margin-top: 2em;">
-    Built with ❤ by
-    <img 
-        src="https://github.com/identicons/spranav.png" 
-        alt="Avatar" 
-        style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; margin: 0 8px; vertical-align: middle;"
-    />
-    <span style="font-weight: 500;">S Pranav (Deepu)</span>
+    © 2025 S Pranav
 </div>
-""", unsafe_allow_html=True)
+""",
+            unsafe_allow_html=True)

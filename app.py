@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-from mood_analyzer import analyze_mood
 from music_recommender import get_music_recommendations
 
 # Set page configuration
@@ -13,9 +12,7 @@ st.set_page_config(
 # App title and description
 st.title("🎵 Mood-Based Music Recommender")
 st.markdown("""
-This app recommends music based on your current mood. You can either:
-- Select your mood directly from the dropdown menu, or
-- Enter a journal entry about how you're feeling, and we'll analyze it for you!
+This app recommends music based on your current mood. Simply select your mood from the dropdown menu to get personalized music recommendations!
 """)
 
 # Initialize session state variables if they don't exist
@@ -23,63 +20,29 @@ if 'detected_mood' not in st.session_state:
     st.session_state.detected_mood = None
 if 'recommendations' not in st.session_state:
     st.session_state.recommendations = None
-if 'journal_text' not in st.session_state:
-    st.session_state.journal_text = ""
 
-# Create two columns for the two input methods
-col1, col2 = st.columns(2)
+# Mood selection
+st.header("Select Your Mood")
 
-# Column 1: Direct mood selection
-with col1:
-    st.header("Select Your Mood")
-    
-    moods = [
-        "Happy", "Energetic", "Relaxed", "Calm", 
-        "Sad", "Anxious", "Focused", "Romantic",
-        "Nostalgic", "Excited", "Sleepy", "Angry"
-    ]
-    
-    selected_mood = st.selectbox("Choose your current mood:", [""] + moods, index=0)
-    
-    if st.button("Get Recommendations from Selection"):
-        if selected_mood:
-            st.session_state.detected_mood = selected_mood
-            with st.spinner(f"Finding music for your {selected_mood.lower()} mood..."):
-                try:
-                    st.session_state.recommendations = get_music_recommendations(selected_mood)
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Error getting recommendations: {str(e)}")
-        else:
-            st.warning("Please select a mood first!")
+moods = [
+    "Happy", "Energetic", "Relaxed", "Calm", 
+    "Sad", "Anxious", "Focused", "Romantic",
+    "Nostalgic", "Excited", "Sleepy", "Angry"
+]
 
-# Column 2: Journal entry analysis
-with col2:
-    st.header("Analyze Your Journal Entry")
-    
-    journal_text = st.text_area(
-        "Write about how you're feeling today...",
-        value=st.session_state.journal_text,
-        height=150
-    )
-    
-    if st.button("Analyze My Mood"):
-        if journal_text.strip():
-            st.session_state.journal_text = journal_text
-            
-            with st.spinner("Analyzing your mood..."):
-                try:
-                    detected_mood = analyze_mood(journal_text)
-                    st.session_state.detected_mood = detected_mood
-                    
-                    # Get music recommendations based on the detected mood
-                    with st.spinner(f"Finding music for your {detected_mood.lower()} mood..."):
-                        st.session_state.recommendations = get_music_recommendations(detected_mood)
-                        st.rerun()
-                except Exception as e:
-                    st.error(f"Error analyzing mood: {str(e)}")
-        else:
-            st.warning("Please enter some text about how you're feeling.")
+selected_mood = st.selectbox("Choose your current mood:", [""] + moods, index=0)
+
+if st.button("Get Music Recommendations", type="primary"):
+    if selected_mood:
+        st.session_state.detected_mood = selected_mood
+        with st.spinner(f"Finding music for your {selected_mood.lower()} mood..."):
+            try:
+                st.session_state.recommendations = get_music_recommendations(selected_mood)
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error getting recommendations: {str(e)}")
+    else:
+        st.warning("Please select a mood first!")
 
 # Display results section
 if st.session_state.detected_mood:
@@ -135,21 +98,21 @@ with st.expander("How do the recommendations work?"):
     st.markdown("""
     ### How our music recommendation works:
     
-    1. **Mood Detection**: 
-       - When you select a mood directly, we use that selection.
-       - When you provide a journal entry, we use Google's Gemini AI to analyze the sentiment and identify your mood.
+    1. **Mood Selection**: 
+       - You select your current mood from our predefined list of options.
     
     2. **Music Matching**:
-       - We match your mood to relevant music genres and keywords.
-       - We then search for top tracks that match these criteria using the Spotify API.
+       - We match your mood to relevant music genres, artists, and tracks.
+       - We then use these as "seeds" to get personalized recommendations using the Spotify API.
     
     3. **Recommendation Display**:
        - We display a selection of tracks that best match your current emotional state.
-       - Each recommendation includes the song title, artist, and a link to listen to it.
+       - Each recommendation includes the song title, artist, album art, and a link to listen on Spotify.
+       - When available, we also provide an audio preview you can play directly in the app.
     
     The goal is to provide music that resonates with how you're feeling right now!
     """)
 
 # Footer
 st.markdown("---")
-st.markdown("Created with ❤️ using Streamlit and Google's Gemini AI")
+st.markdown("Created with ❤️ using Streamlit and Spotify API")

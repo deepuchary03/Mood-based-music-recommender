@@ -120,14 +120,15 @@ def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]
         # Get seed values for the mood
         seed_data = MOOD_TO_SPOTIFY_SEEDS[mood]
         
-        # Take a random sample of seeds to use (Spotify API accepts up to 5 seeds total)
-        seed_genres = random.sample(seed_data["genres"], min(2, len(seed_data["genres"])))
-        seed_artists = random.sample(seed_data["artists"], min(1, len(seed_data["artists"])))
-        seed_tracks = random.sample(seed_data["tracks"], min(2, len(seed_data["tracks"])))
+        # Use simplified approach to avoid API errors
+        # Spotify allows maximum of 5 total seeds, so use 2 genres, 1 artist, and 2 tracks
+        
+        # Let's simplify and just use artists and tracks
+        seed_artists = random.sample(seed_data["artists"], min(2, len(seed_data["artists"])))
+        seed_tracks = random.sample(seed_data["tracks"], min(3, len(seed_data["tracks"])))
         
         # Get recommendations from Spotify
         results = sp.recommendations(
-            seed_genres=seed_genres,
             seed_artists=seed_artists,
             seed_tracks=seed_tracks,
             limit=limit
@@ -161,7 +162,45 @@ def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]
     
     except Exception as e:
         # Log the error for debugging
-        print(f"Error fetching music recommendations: {str(e)}")
+        error_msg = f"Error fetching music recommendations: {str(e)}"
+        print(error_msg)
+        
+        # For specific Spotify API errors, handle them differently
+        if "http status: 401" in str(e) or "http status: 404" in str(e):
+            print("Authentication error: Please check your Spotify API credentials")
+            # Try a search instead as fallback
+            try:
+                # Select a random keyword from mood mappings
+                keyword = random.choice(MOOD_MAPPINGS[mood])
+                results = sp.search(q=keyword, type="track", limit=limit)
+                tracks = results["tracks"]["items"]
+                
+                recommendations = []
+                for track in tracks:
+                    # Get the album image if available
+                    image_url = None
+                    if track["album"]["images"] and len(track["album"]["images"]) > 0:
+                        # Get medium-sized image if available, otherwise use the first one
+                        if len(track["album"]["images"]) > 1:
+                            image_url = track["album"]["images"][1]["url"]
+                        else:
+                            image_url = track["album"]["images"][0]["url"]
+                    
+                    # Get the artist name
+                    artist_name = track["artists"][0]["name"] if track["artists"] else "Unknown Artist"
+                    
+                    # Create a recommendation item
+                    recommendations.append({
+                        "name": track["name"],
+                        "artist": artist_name,
+                        "url": track["external_urls"]["spotify"] if "external_urls" in track and "spotify" in track["external_urls"] else "",
+                        "image_url": image_url,
+                        "preview_url": track.get("preview_url", None)
+                    })
+                
+                return recommendations
+            except Exception as inner_e:
+                print(f"Fallback search also failed: {str(inner_e)}")
         
         # Return an empty list in case of error
         return []

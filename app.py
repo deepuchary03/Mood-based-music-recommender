@@ -25,9 +25,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# App title and description with emoji - using native Streamlit functions
-st.title("🎵 Mood-Based Music Recommender")
-st.write("Get personalized music recommendations based on your current mood featuring your favorite artists!")
+# App title and description with emoji
+st.markdown("<h1>🎵 Mood-Based Music Recommender</h1>", unsafe_allow_html=True)
+st.markdown("<p class='description'>Get personalized music recommendations based on your current mood featuring your favorite artists!</p>", unsafe_allow_html=True)
 
 # Initialize session state variables if they don't exist
 if 'detected_mood' not in st.session_state:
@@ -72,10 +72,8 @@ if st.session_state.detected_mood:
     mood = st.session_state.detected_mood
     emoji = mood_emojis.get(mood, "🎵")
     
-    # Display mood header using Streamlit's native functions
-    st.header(f"Your {mood} {emoji} Music")
-    st.write("Featuring songs from your favorite artists")
-    st.markdown("---")
+    st.markdown(f"<h2 style='text-align: center; color: #1DB954;'>Your {mood} {emoji} Music</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; margin-bottom: 30px;'>Featuring songs from your favorite artists</p>", unsafe_allow_html=True)
     
     # Display recommendations
     if st.session_state.recommendations:
@@ -85,16 +83,35 @@ if st.session_state.detected_mood:
             
             for i, track in enumerate(st.session_state.recommendations):
                 with cols[i % 3]:
-                    # Create a simple card with consistent styling
-                    st.write(f"**{track['name']}**")
-                    st.write(f"*{track['artist']}*")
+                    # Card container with shadow and hover effect
+                    st.markdown(f"""
+                    <div style="
+                        background-color: white; 
+                        border-radius: 10px; 
+                        padding: 15px; 
+                        margin-bottom: 20px; 
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        transition: transform 0.3s;
+                        height: 380px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                    ">
+                        <div>
+                            <h3 style="margin-top: 0; font-size: 16px; color: #191414; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
+                            <p style="color: #666; font-size: 14px; margin-top: 5px;">{track['artist']}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
                     
-                    # Display image using st.image which is more reliable
+                    # Display the album art if available
                     if 'image_url' in track and track['image_url']:
-                        try:
-                            st.image(track['image_url'], width=180)
-                        except Exception as e:
-                            st.write("Image unavailable")
+                        st.markdown(f"""
+                        <div style="text-align: center; margin: 10px 0;">
+                            <a href="{track['url']}" target="_blank">
+                                <img src="{track['image_url']}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                            </a>
+                        </div>
+                        """, unsafe_allow_html=True)
                     
                     # Add a preview player if available
                     if 'preview_url' in track and track['preview_url']:
@@ -102,42 +119,55 @@ if st.session_state.detected_mood:
                     
                     # Add a link to listen to the track
                     if 'url' in track:
-                        st.markdown(f"[Listen on Spotify]({track['url']})")
-                    
-                    st.markdown("---")
+                        st.markdown(f"""
+                        <div style="text-align: center; margin-top: 10px;">
+                            <a href="{track['url']}" target="_blank" style="
+                                display: inline-block;
+                                text-decoration: none;
+                                color: white;
+                                background-color: #1DB954;
+                                padding: 8px 15px;
+                                border-radius: 20px;
+                                font-size: 14px;
+                                font-weight: bold;
+                                transition: background-color 0.3s;
+                            ">Listen on Spotify</a>
+                        </div>
+                        </div>
+                        """, unsafe_allow_html=True)
         else:
             st.info("No recommendations found for this mood. Try a different mood.")
     else:
         st.info("Recommendations will appear here once your mood is analyzed.")
         
     # Add an artist feature section
-    st.markdown("---")
-    st.header("Your Favorite Artists")
+    st.markdown("<hr style='margin: 30px 0; height: 2px; background: linear-gradient(to right, #1DB954, #191414);'>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>Your Favorite Artists</h3>", unsafe_allow_html=True)
     
-    # Simple emoji approach for artists (much more reliable than external images)
+    # Artist images and Spotify IDs
     artist_info = {
         "Taylor Swift": {
-            "emoji": "👩‍🎤",
+            "image": "https://i.scdn.co/image/ab6761610000e5eb5a00969a4698c3bc19d84821",
             "id": "06HL4z0CvFAxyc27GXpf02"
         },
         "Selena Gomez": {
-            "emoji": "👩‍🎤", 
+            "image": "https://i.scdn.co/image/ab6761610000e5eba5205abffd84341e5842059d",
             "id": "0C8ZW7ezQVs4URX5aX7Kqx"
         },
         "Ed Sheeran": {
-            "emoji": "👨‍🎤",
+            "image": "https://i.scdn.co/image/ab6761610000e5eb3bcef85e105dfc42399ef0af",
             "id": "6eUKZXaKkcviH0Ku9w2n3V"
         },
         "Justin Bieber": {
-            "emoji": "👨‍🎤",
+            "image": "https://i.scdn.co/image/ab6761610000e5eb8ae7f2aaa9817a704a87ea36",
             "id": "1uNFoZAHBGtllmzznpCI3s"
         },
         "Alan Walker": {
-            "emoji": "👨‍🎤",
+            "image": "https://i.scdn.co/image/ab6761610000e5ebc02d416c309a68b04dc94576",
             "id": "7vk5e3vY1uw9plTHJAMwjN"
         },
         "The Weeknd": {
-            "emoji": "👨‍🎤",
+            "image": "https://i.scdn.co/image/ab6761610000e5eb214f3cf1cbe7139c1e26ffbb",
             "id": "1Xyo4u8uXC1ZmMpatF05PJ"
         }
     }
@@ -147,14 +177,22 @@ if st.session_state.detected_mood:
     
     for i, artist in enumerate(featured_artists):
         with artist_cols[i]:
-            # Display artist emoji (much more reliable than external images)
-            st.write(f"{artist_info[artist]['emoji']}")
-            st.markdown(f"**{artist}**")
-            
-            # Add Spotify link
-            spotify_url = f"https://open.spotify.com/artist/{artist_info[artist]['id']}"
-            st.markdown(f"[Spotify Profile]({spotify_url})")
-                
+            # Artist card with circular image
+            st.markdown(f"""
+            <div style="text-align: center;">
+                <a href="https://open.spotify.com/artist/{artist_info[artist]['id']}" target="_blank">
+                    <img src="{artist_info[artist]['image']}" style="
+                        width: 80px; 
+                        height: 80px; 
+                        border-radius: 50%; 
+                        object-fit: cover;
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                        margin-bottom: 10px;
+                    ">
+                </a>
+                <p style="font-weight: bold; margin: 5px 0 0 0; font-size: 14px;">{artist}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
 # Add some information about how the recommendations work
 with st.expander("How do the recommendations work?"):
@@ -177,5 +215,5 @@ with st.expander("How do the recommendations work?"):
     """)
 
 # Footer
-st.markdown("---")
-st.markdown("Created with ❤️ using Streamlit and [Spotify API](https://open.spotify.com)")
+st.markdown("<hr style='margin-top: 40px; margin-bottom: 20px; height: 2px; background: linear-gradient(to right, #1DB954, #191414);'>", unsafe_allow_html=True)
+st.markdown("<p class='footer'>Created with ❤️ using Streamlit and <a href='https://open.spotify.com' target='_blank' style='color: #1DB954; text-decoration: none;'>Spotify API</a></p>", unsafe_allow_html=True)

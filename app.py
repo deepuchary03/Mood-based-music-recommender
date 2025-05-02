@@ -158,28 +158,40 @@ if st.session_state.detected_mood:
                     # Display album name to show we're using real data
                     album_name = track.get('album_name', '')
                     
-                    # Create a styled card with proper alignment
+                    # Create a styled card with larger images and consistent dimensions
                     st.markdown(f"""
-                    <div style="background-color: #121212; border-radius: 10px; padding: 15px; margin-bottom: 20px; color: white;">
-                        <div style="display: flex; align-items: center;">
-                            <div style="flex: 1; max-width: 200px;">
-                                <img src="{image_url}" style="width: 100%; border-radius: 5px;" alt="Album Cover">
+                    <div style="background-color: #121212; border-radius: 10px; padding: 0; margin-bottom: 20px; color: white; height: 350px; overflow: hidden;">
+                        <div style="display: flex; flex-direction: column; height: 100%;">
+                            <!-- Larger album image with fixed dimensions -->
+                            <div style="height: 60%; width: 100%; overflow: hidden; position: relative;">
+                                <img src="{image_url}" style="width: 100%; height: 100%; object-fit: cover;" alt="Album Cover">
+                                <div style="position: absolute; top: 10px; right: 10px; background-color: rgba(0,0,0,0.7); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/232px-Spotify_icon.svg.png" style="width: 20px; height: 20px;">
+                                </div>
                             </div>
-                            <div style="flex: 2; padding-left: 20px;">
-                                <h3 style="margin: 0 0 10px 0; font-size: 20px;">{track['name']}</h3>
-                                <p style="margin: 0 0 5px 0;"><strong>Artist:</strong> {track['artist']}</p>
-                                <p style="margin: 0 0 15px 0;"><strong>Album:</strong> {album_name}</p>
-                                <a href="{track['url']}" target="_blank" style="
-                                    display: inline-block;
-                                    text-decoration: none;
-                                    color: white;
-                                    background-color: #1DB954;
-                                    padding: 6px 15px;
-                                    border-radius: 20px;
-                                    font-size: 14px;
-                                    font-weight: bold;">
-                                    Listen on Spotify
-                                </a>
+                            <!-- Track info in fixed height container -->
+                            <div style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div>
+                                    <h3 style="margin: 0 0 10px 0; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
+                                    <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Artist:</strong> {track['artist']}</p>
+                                    <p style="margin: 0; font-size: 14px; color: #aaa;"><strong>Album:</strong> {album_name}</p>
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <a href="{track['url']}" target="_blank" style="
+                                        display: inline-block;
+                                        text-decoration: none;
+                                        color: white;
+                                        background-color: #1DB954;
+                                        padding: 8px 15px;
+                                        border-radius: 20px;
+                                        font-size: 14px;
+                                        font-weight: bold;
+                                        width: 100%;
+                                        text-align: center;
+                                        box-sizing: border-box;">
+                                        Listen on Spotify
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

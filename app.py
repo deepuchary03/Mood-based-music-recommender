@@ -9,25 +9,38 @@ st.set_page_config(
     layout="wide",
 )
 
-# Custom CSS
+# Custom CSS - Spotify themed dark mode
 st.markdown("""
 <style>
-    .main {background-color: #f5f5f5;}
+    .main {background-color: #121212 !important;}
     .stApp {max-width: 1200px; margin: 0 auto;}
-    h1 {color: #1DB954; text-align: center; margin-bottom: 0.5em;}
-    .description {font-size: 1.2em; text-align: center; margin-bottom: 2em;}
-    .stButton>button {background-color: #1DB954; color: white; border: none; padding: 0.5em 2em; border-radius: 30px;}
-    .stButton>button:hover {background-color: #14943E;}
+    h1 {color: #1DB954 !important; text-align: center; margin-bottom: 0.5em;}
+    h2, h3, h4, h5 {color: white !important;}
+    .description {font-size: 1.2em; text-align: center; margin-bottom: 2em; color: #DDDDDD !important;}
+    .stButton>button {background-color: #1DB954 !important; color: white !important; border: none !important; padding: 0.5em 2em !important; border-radius: 30px !important;}
+    .stButton>button:hover {background-color: #14943E !important;}
     
-    /* Selectbox styling */
-    div.stSelectbox > div > div > div {background-color: white; border-radius: 10px;}
-    div.stSelectbox > div > div > div:hover {border-color: #1DB954;}
-    div.stSelectbox select option {color: black !important;}
-    div.stSelectbox select {color: #191414 !important;}
+    /* Selectbox styling - dark theme */
+    div.stSelectbox > div > div > div {background-color: #212121 !important; border-radius: 10px; color: white !important;}
+    div.stSelectbox > div > div > div:hover {border-color: #1DB954 !important;}
+    div.stSelectbox select option {color: white !important;}
+    div.stSelectbox label {color: white !important;}
+    div[data-baseweb="select"] {background-color: #212121 !important;}
+    div[data-baseweb="select"] span {color: white !important;}
+    div[role="listbox"] {background-color: #212121 !important;}
+    div[role="option"] {background-color: #212121 !important;}
+    div[role="option"]:hover {background-color: #333333 !important;}
     
-    /* Make sure selected text is visible */
-    .css-10oheav {color: #191414 !important;}
-    .css-1b0udgb {color: #191414 !important;}
+    /* Fix text visibility in dark mode */
+    .css-10oheav {color: white !important;}
+    .css-1b0udgb {color: white !important;}
+    p {color: #DDDDDD !important;}
+    div.stMarkdown p {color: #DDDDDD !important;}
+    .css-1aumxhk {background-color: #121212 !important;}
+    label {color: white !important;}
+    [data-testid="stSidebarContent"] {background-color: #121212 !important;}
+    [data-testid="stAppViewContainer"] {background-color: #121212 !important;}
+    [data-baseweb="select"] > div {background-color: #212121 !important; color: white !important;}
     .st-bq {color: #191414 !important;}
     .st-br {color: #191414 !important;}
     .st-bs {color: #191414 !important;}
@@ -145,25 +158,32 @@ if st.session_state.detected_mood:
                     # Display album name to show we're using real data
                     album_name = track.get('album_name', '')
                     
-                    col1, col2 = st.columns([1, 1])
-                    
-                    with col1:
-                        # Display the album image directly with proper error handling
-                        if image_url:
-                            try:
-                                st.image(image_url, width=150, caption="Album Cover")
-                            except Exception as e:
-                                st.error(f"Image error: {str(e)}")
-                                st.markdown(f"[View album cover]({image_url})")
-                    
-                    with col2:
-                        # Track info
-                        st.markdown(f"### {track['name']}")
-                        st.markdown(f"**Artist:** {track['artist']}")
-                        st.markdown(f"**Album:** {album_name}")
-                        st.markdown(f"[Listen on Spotify]({track['url']})")
-                    
-                    st.markdown("---")
+                    # Create a styled card with proper alignment
+                    st.markdown(f"""
+                    <div style="background-color: #121212; border-radius: 10px; padding: 15px; margin-bottom: 20px; color: white;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="flex: 1; max-width: 200px;">
+                                <img src="{image_url}" style="width: 100%; border-radius: 5px;" alt="Album Cover">
+                            </div>
+                            <div style="flex: 2; padding-left: 20px;">
+                                <h3 style="margin: 0 0 10px 0; font-size: 20px;">{track['name']}</h3>
+                                <p style="margin: 0 0 5px 0;"><strong>Artist:</strong> {track['artist']}</p>
+                                <p style="margin: 0 0 15px 0;"><strong>Album:</strong> {album_name}</p>
+                                <a href="{track['url']}" target="_blank" style="
+                                    display: inline-block;
+                                    text-decoration: none;
+                                    color: white;
+                                    background-color: #1DB954;
+                                    padding: 6px 15px;
+                                    border-radius: 20px;
+                                    font-size: 14px;
+                                    font-weight: bold;">
+                                    Listen on Spotify
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
 
                     # Add a preview player if available (outside the card for better usability)
                     if 'preview_url' in track and track['preview_url']:

@@ -145,7 +145,7 @@ if st.session_state.detected_mood:
                     # Display album name to show we're using real data
                     album_name = track.get('album_name', '')
                     
-                    # Create the card container with album art from Spotify
+                    # Create a cleaner approach for displaying album art
                     st.markdown(f"""
                     <div style="
                         background-color: white; 
@@ -157,65 +157,48 @@ if st.session_state.detected_mood:
                         position: relative;
                     ">
                         <a href="{track['url']}" target="_blank" style="text-decoration: none; color: inherit;">
-                            <div style="
-                                width: 100%;
-                                height: 100%;
-                                background-image: url('{image_url}');
-                                background-size: cover;
-                                background-position: center;
-                                position: relative;
-                            ">
-                                <div style="
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    right: 0;
-                                    padding: 12px 15px;
-                                    background-color: rgba(0,0,0,0.7);
+                            <div style="padding: 20px; text-align: center;">
+                                <!-- Album Image from Spotify -->
+                                <div style="position: relative; margin-bottom: 10px;">
+                                    <img src="{image_url}" style="
+                                        width: 200px;
+                                        height: 200px;
+                                        object-fit: cover;
+                                        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                                        border-radius: 6px;
+                                        display: inline-block;
+                                    "/>
+                                    <!-- Spotify logo indicator -->
+                                    <div style="
+                                        position: absolute;
+                                        top: 5px;
+                                        right: 5px;
+                                        width: 24px;
+                                        height: 24px;
+                                        background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/232px-Spotify_icon.svg.png');
+                                        background-size: cover;
+                                        filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+                                    "></div>
+                                </div>
+                                
+                                <!-- Track info -->
+                                <h3 style="margin: 10px 0 5px 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{track['name']}</h3>
+                                <p style="margin: 0 0 5px 0; font-size: 14px; color: #333;">{track['artist']}</p>
+                                <p style="margin: 0 0 10px 0; font-size: 12px; color: #666; font-style: italic;">Album: {album_name}</p>
+                                
+                                <!-- Listen button -->
+                                <a href="{track['url']}" target="_blank" style="
+                                    display: inline-block;
+                                    text-decoration: none;
                                     color: white;
+                                    background-color: #1DB954;
+                                    padding: 8px 15px;
+                                    border-radius: 20px;
+                                    font-size: 14px;
                                     font-weight: bold;
-                                    font-size: 16px;
-                                    text-align: center;
-                                    white-space: nowrap;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                ">
-                                    {track['name']}
-                                </div>
-                                <div style="
-                                    position: absolute;
-                                    bottom: 0;
-                                    left: 0;
-                                    right: 0;
-                                    padding: 15px;
-                                    background-color: rgba(255,255,255,0.9);
-                                ">
-                                    <p style="margin: 0 0 5px 0; font-size: 15px; color: #333; font-weight: 500;">{track['artist']}</p>
-                                    <p style="margin: 0 0 10px 0; font-size: 13px; color: #666; font-style: italic;">Album: {album_name}</p>
-                                    <div style="margin-top: 10px; text-align: center;">
-                                        <a href="{track['url']}" target="_blank" style="
-                                            display: inline-block;
-                                            text-decoration: none;
-                                            color: white;
-                                            background-color: #1DB954;
-                                            padding: 8px 15px;
-                                            border-radius: 20px;
-                                            font-size: 14px;
-                                            font-weight: bold;
-                                            transition: background-color 0.3s;
-                                        ">Listen on Spotify</a>
-                                    </div>
-                                </div>
-                                <div style="
-                                    position: absolute; 
-                                    top: 10px; 
-                                    right: 10px; 
-                                    width: 24px; 
-                                    height: 24px; 
-                                    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/232px-Spotify_icon.svg.png');
-                                    background-size: cover;
-                                    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
-                                "></div>
+                                    transition: background-color 0.3s;
+                                    margin-top: 5px;
+                                ">Listen on Spotify</a>
                             </div>
                         </a>
                     </div>

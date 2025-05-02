@@ -20,67 +20,87 @@ MOOD_MAPPINGS = {
     "Angry": ["metal", "hard rock", "punk", "aggressive", "intense"]
 }
 
+# Favorite artists (user priorities)
+FAVORITE_ARTISTS = {
+    "Taylor Swift": "06HL4z0CvFAxyc27GXpf02",
+    "Selena Gomez": "0C8ZW7ezQVs4URX5aX7Kqx",
+    "Ed Sheeran": "6eUKZXaKkcviH0Ku9w2n3V",
+    "Justin Bieber": "1uNFoZAHBGtllmzznpCI3s", 
+    "Alan Walker": "7vk5e3vY1uw9plTHJAMwjN",
+    "The Weeknd": "1Xyo4u8uXC1ZmMpatF05PJ"
+}
+
+# Popular tracks from favorite artists
+POPULAR_TRACKS = {
+    "Taylor Swift": ["0V3wPSX9ygBnCm8psDIegu", "1BxfuPKGuaTgP7aM0Bbdwr"], # Cruel Summer, Blank Space
+    "Selena Gomez": ["7FIWs0pqAYbP91WWM0vlTQ", "2dpaYNEQHiRxtZbfNsse99"], # Calm Down, Love You Like a Love Song
+    "Ed Sheeran": ["0V3wPSX9ygBnCm8psDIegu", "6PQ88X9TkUIAUIZJHW2upE"], # Shape of You, Perfect
+    "Justin Bieber": ["4iJyoBOLtHqaGxP12qzhQI", "50kpGaPAhYJ3sGmk6vplg0"], # Stay, Love Yourself
+    "Alan Walker": ["60ynsPSSKe6O3sfMgJPn74", "5h8LXUIoHLgpXM8rLI5JUl"], # Faded, Alone
+    "The Weeknd": ["2p8IUWQDrpjuFltbdgLOag", "5Odq8ohlgIbQKMZivbWkEo"] # Blinding Lights, Save Your Tears
+}
+
 # Map moods to Spotify genres and seeds
 MOOD_TO_SPOTIFY_SEEDS = {
     "Happy": {
         "genres": ["pop", "happy", "disco"],
-        "artists": ["4gzpq5DPGxSnKTe4SA8HAU", "6sFIWsNpZYqfjUpaCgueju"], # Coldplay, Adele
-        "tracks": ["6DCZcSspjsKoFjzjrWoCdn", "60nZcImufyMA1MKQY3dcCH"] # Happy - Pharrell, Good as Hell - Lizzo
+        "artists": [FAVORITE_ARTISTS["Taylor Swift"], FAVORITE_ARTISTS["Ed Sheeran"]], 
+        "tracks": [POPULAR_TRACKS["Taylor Swift"][0], POPULAR_TRACKS["Ed Sheeran"][0]]
     },
     "Energetic": {
         "genres": ["electronic", "dance", "edm"],
-        "artists": ["4YRxDV8wJFPHPTeXepOstw", "23fqKkggKUBHNkbKtXEls4"], # Avicii, Kygo
-        "tracks": ["2KH16WveTQWT6KOG9Rg6e2", "6Xgq7MvZiet0hVi3KaDSgJ"] # Titanium, Uptown Funk
+        "artists": [FAVORITE_ARTISTS["Alan Walker"], FAVORITE_ARTISTS["The Weeknd"]], 
+        "tracks": [POPULAR_TRACKS["Alan Walker"][0], POPULAR_TRACKS["The Weeknd"][0]]
     },
     "Relaxed": {
         "genres": ["chill", "ambient", "acoustic"],
-        "artists": ["6eUKZXaKkcviH0Ku9w2n3V", "00FQb4jTyendYWaN8pK0wa"], # Ed Sheeran, Lana Del Rey
-        "tracks": ["0rKtyWc8bvkriBthvHKY8d", "0GLyymAV86KIVUYJzRyJIR"] # River Flows in You, Experience
+        "artists": [FAVORITE_ARTISTS["Ed Sheeran"], FAVORITE_ARTISTS["Taylor Swift"]], 
+        "tracks": [POPULAR_TRACKS["Ed Sheeran"][1], POPULAR_TRACKS["Taylor Swift"][1]]
     },
     "Calm": {
         "genres": ["classical", "piano", "instrumental"],
-        "artists": ["2wOqMjp9TyABvtHdOSOTUS", "0X2BH1fck6amBIoJhDVmmJ"], # Ludovico Einaudi, Elijah Woods
-        "tracks": ["0YwBZKT0PELZyWw1HA0Kw9", "6vFsBXYczYsP0H1rA7kvV5"] # Nuvole Bianche, Clair de Lune
+        "artists": [FAVORITE_ARTISTS["Ed Sheeran"], FAVORITE_ARTISTS["Selena Gomez"]], 
+        "tracks": [POPULAR_TRACKS["Ed Sheeran"][1], POPULAR_TRACKS["Selena Gomez"][1]]
     },
     "Sad": {
         "genres": ["sad", "blues", "singer-songwriter"],
-        "artists": ["5pKCCKE2ajJHZ9KAiaK11H", "06HL4z0CvFAxyc27GXpf02"], # Radiohead, Taylor Swift
-        "tracks": ["1lzr43nnXAijIGYnCT8M8H", "4h9wh7iOZ0GGn8QVp4RAOB"] # Creep, All Too Well
+        "artists": [FAVORITE_ARTISTS["Taylor Swift"], FAVORITE_ARTISTS["The Weeknd"]], 
+        "tracks": [POPULAR_TRACKS["Taylor Swift"][1], POPULAR_TRACKS["The Weeknd"][1]]
     },
     "Anxious": {
         "genres": ["alternative", "indie", "experimental"],
-        "artists": ["53XhwfbYqKCa1cC15pYq2q", "0k17h0D3J5VfsdmQ1iZtE9"], # Metallica, Pink Floyd
-        "tracks": ["7ouMYWpwJ422jRcDASZB7P", "2CgOd0Lj5MuvOqzqdaAXtS"] # One, Money
+        "artists": [FAVORITE_ARTISTS["The Weeknd"], FAVORITE_ARTISTS["Alan Walker"]], 
+        "tracks": [POPULAR_TRACKS["The Weeknd"][0], POPULAR_TRACKS["Alan Walker"][1]]
     },
     "Focused": {
         "genres": ["study", "focus", "instrumental"],
-        "artists": ["2wOqMjp9TyABvtHdOSOTUS", "0Xk15jHKly4c3AhPr5vjoA"], # Ludovico Einaudi, Hans Zimmer
-        "tracks": ["6fxVffaTuwjgEk5h9QyRjy", "2RSHsoi04658QL5xgQVov3"] # Time, Interstellar Theme
+        "artists": [FAVORITE_ARTISTS["Ed Sheeran"], FAVORITE_ARTISTS["Alan Walker"]], 
+        "tracks": [POPULAR_TRACKS["Ed Sheeran"][1], POPULAR_TRACKS["Alan Walker"][1]]
     },
     "Romantic": {
         "genres": ["r-n-b", "love", "soul"],
-        "artists": ["3TVXtAsR1Inumwj472S9r4", "5ZsFI1h6hIdQRw2ti0hz81"], # Drake, ZAYN
-        "tracks": ["0VjIjW4GlUZAMYd2vXMi3b", "14iI3HO9P4X6xs6lBZctHe"] # Thinking Out Loud, Pillowtalk
+        "artists": [FAVORITE_ARTISTS["Justin Bieber"], FAVORITE_ARTISTS["Selena Gomez"]], 
+        "tracks": [POPULAR_TRACKS["Justin Bieber"][1], POPULAR_TRACKS["Selena Gomez"][1]]
     },
     "Nostalgic": {
-        "genres": ["80s", "90s", "oldies"],
-        "artists": ["0oSGxfWSnnOXhD2fKuz2Gy", "1dfeR4HaWDbWqFHLkxsg1d"], # Abba, Queen
-        "tracks": ["4NsPgRYUdHu2Q5JRNgXYU5", "5vdp5UmvTsnMEMESIF2Ym7"] # Dancing Queen, Another One Bites the Dust
+        "genres": ["80s", "90s", "pop"],
+        "artists": [FAVORITE_ARTISTS["Taylor Swift"], FAVORITE_ARTISTS["Justin Bieber"]], 
+        "tracks": [POPULAR_TRACKS["Taylor Swift"][1], POPULAR_TRACKS["Justin Bieber"][1]]
     },
     "Excited": {
         "genres": ["party", "edm", "dance"],
-        "artists": ["64KEffDW9EtZ1y2vBYgq8T", "1uNFoZAHBGtllmzznpCI3s"], # Marshmello, Justin Bieber
-        "tracks": ["5jnxScfRVyWskdfPGjTF7c", "60nZcImufyMA1MKQY3dcCH"] # Don't Stop the Music, Good as Hell
+        "artists": [FAVORITE_ARTISTS["Justin Bieber"], FAVORITE_ARTISTS["Selena Gomez"]], 
+        "tracks": [POPULAR_TRACKS["Justin Bieber"][0], POPULAR_TRACKS["Selena Gomez"][0]]
     },
     "Sleepy": {
         "genres": ["sleep", "ambient", "meditation"],
-        "artists": ["4NHQUGzhtTLFvgF5SZesLK", "5IH6FPUwQTxPSXurCrcIov"], # Enya, Explosions in the Sky
-        "tracks": ["2EEeorm0jyVX4LT0zRXHaD", "6vFsBXYczYsP0H1rA7kvV5"] # May It Be, Clair de Lune
+        "artists": [FAVORITE_ARTISTS["Ed Sheeran"], FAVORITE_ARTISTS["Taylor Swift"]], 
+        "tracks": [POPULAR_TRACKS["Ed Sheeran"][1], POPULAR_TRACKS["Taylor Swift"][1]]
     },
     "Angry": {
-        "genres": ["metal", "hard-rock", "punk-rock"],
-        "artists": ["7jy3rLJdDQY21OgRLCZ9sD", "6XyY86QOPPrYVGvF9ch6wz"], # Linkin Park, Disturbed
-        "tracks": ["60a0Rd6pjrkxjPbaKzXjfq", "2MuWTIM3b0YEAskbeeFE1i"] # In The End, The Sound of Silence (Disturbed)
+        "genres": ["electronic", "dance", "pop-rock"],
+        "artists": [FAVORITE_ARTISTS["Alan Walker"], FAVORITE_ARTISTS["The Weeknd"]], 
+        "tracks": [POPULAR_TRACKS["Alan Walker"][1], POPULAR_TRACKS["The Weeknd"][0]]
     }
 }
 
@@ -170,9 +190,17 @@ def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]
             print("Authentication error: Please check your Spotify API credentials")
             # Try a search instead as fallback
             try:
-                # Select a random keyword from mood mappings
+                # Try to search specifically for songs by favorite artists that match the mood
+                favorite_artists = list(FAVORITE_ARTISTS.values())
+                
+                # Use one of the artist names and a mood keyword for a more focused search
+                artist_name = random.choice(list(FAVORITE_ARTISTS.keys()))
                 keyword = random.choice(MOOD_MAPPINGS[mood])
-                results = sp.search(q=keyword, type="track", limit=limit)
+                
+                # Perform search
+                search_query = f"artist:{artist_name} {keyword}"
+                print(f"Performing fallback search with query: {search_query}")
+                results = sp.search(q=search_query, type="track", limit=limit)
                 tracks = results["tracks"]["items"]
                 
                 recommendations = []

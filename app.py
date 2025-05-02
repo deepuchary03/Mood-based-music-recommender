@@ -282,16 +282,6 @@ if st.session_state.detected_mood:
 st.markdown(
     "<hr style='margin-top: 40px; margin-bottom: 20px; height: 2px; background: linear-gradient(to right, #1DB954, #191414);'>",
     unsafe_allow_html=True)
-
-# Custom footer with profile image
-st.markdown("""
-<div style="text-align: center; margin-top: 2em;">
-    Built with ❤ by
-    <img 
-        src="https://github.com/identicons/spranav.png" 
-        alt="Avatar" 
-        style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; margin: 0 8px; vertical-align: middle;"
-    />
-    <span style="font-weight: 500;">S Pranav (Deepu)</span>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    "<p class='footer'>Made with ❤️ by Streamlit and <a href='https://open.spotify.com' target='_blank' style='color: #1DB954; text-decoration: none;'>Spotify API</a></p>",
+    unsafe_allow_html=True)

@@ -106,70 +106,57 @@ MOOD_TO_SPOTIFY_SEEDS = {
 
 # Initialize Spotify client
 def get_spotify_client():
+    """Create and return a Spotify client using environment variables."""
     client_id = os.getenv("SPOTIFY_CLIENT_ID")
     client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
     
     if not client_id or not client_secret:
         raise ValueError("Spotify credentials not found in environment variables")
     
-    client_credentials_manager = SpotifyClientCredentials(
-        client_id=client_id, 
-        client_secret=client_secret
+    # Avoid cache issues
+    auth_manager = SpotifyClientCredentials(
+        client_id=client_id,
+        client_secret=client_secret,
+        cache_handler=None
     )
-    return spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]:
-    """
-    Get music recommendations based on the detected mood using Spotify API.
     
-    Args:
-        mood: A string representing the user's mood.
-        limit: Number of recommendations to return.
-        
-    Returns:
-        A list of dictionaries containing music recommendations.
-    """
+    return spotipy.Spotify(
+        auth_manager=auth_manager,
+        requests_timeout=20
+    )
+
+def search_tracks_by_artist_and_keyword(sp, artist_name: str, keyword: str, limit: int = 9):
+    """Search for tracks by artist name and keyword."""
     try:
-        # Get Spotify client
-        sp = get_spotify_client()
+        # Create a search query
+        search_query = f"artist:{artist_name} {keyword}"
+        print(f"Searching with query: {search_query}")
         
-        # Default to Relaxed if mood not found
-        if mood not in MOOD_TO_SPOTIFY_SEEDS:
-            mood = "Relaxed"
-        
-        # Get seed values for the mood
-        seed_data = MOOD_TO_SPOTIFY_SEEDS[mood]
-        
-        # Use simplified approach to avoid API errors
-        # Spotify allows maximum of 5 total seeds, so use 2 genres, 1 artist, and 2 tracks
-        
-        # Let's simplify and just use artists and tracks
-        seed_artists = random.sample(seed_data["artists"], min(2, len(seed_data["artists"])))
-        seed_tracks = random.sample(seed_data["tracks"], min(3, len(seed_data["tracks"])))
-        
-        # Get recommendations from Spotify
-        results = sp.recommendations(
-            seed_artists=seed_artists,
-            seed_tracks=seed_tracks,
-            limit=limit
-        )
-        
-        # Format the recommendations
-        recommendations = []
-        for track in results["tracks"]:
-            # Get the album image if available
+        # Execute the search
+        results = sp.search(q=search_query, type="track", limit=limit)
+        return results["tracks"]["items"]
+    except Exception as e:
+        print(f"Search error: {str(e)}")
+        return []
+
+def format_track_data(tracks):
+    """Format track data into a consistent structure."""
+    recommendations = []
+    
+    for track in tracks:
+        try:
+            # Get album image
             image_url = None
             if track["album"]["images"] and len(track["album"]["images"]) > 0:
-                # Get medium-sized image if available, otherwise use the first one
                 if len(track["album"]["images"]) > 1:
                     image_url = track["album"]["images"][1]["url"]
                 else:
                     image_url = track["album"]["images"][0]["url"]
             
-            # Get the artist name
+            # Get artist name
             artist_name = track["artists"][0]["name"] if track["artists"] else "Unknown Artist"
             
-            # Create a recommendation item
+            # Create recommendation item
             recommendations.append({
                 "name": track["name"],
                 "artist": artist_name,
@@ -177,58 +164,75 @@ def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]
                 "image_url": image_url,
                 "preview_url": track.get("preview_url", None)
             })
+        except Exception as e:
+            print(f"Error formatting track: {str(e)}")
+    
+    return recommendations
+
+def get_music_recommendations(mood: str, limit: int = 9) -> List[Dict[str, Any]]:
+    """Get music recommendations based on mood."""
+    try:
+        # Initialize Spotify client
+        sp = get_spotify_client()
         
-        return recommendations
+        # Default to Relaxed if mood not found
+        if mood not in MOOD_TO_SPOTIFY_SEEDS:
+            mood = "Relaxed"
+        
+        # Get seed data for the mood
+        seed_data = MOOD_TO_SPOTIFY_SEEDS[mood]
+        
+        try:
+            # Try using recommendations API first
+            print(f"Getting recommendations for mood: {mood}")
+            
+            # Sample seeds - with fewer seeds to improve reliability
+            seed_genres = random.sample(seed_data["genres"], min(1, len(seed_data["genres"])))
+            seed_artists = random.sample(seed_data["artists"], min(1, len(seed_data["artists"])))
+            seed_tracks = random.sample(seed_data["tracks"], min(1, len(seed_data["tracks"])))
+            
+            print(f"Seeds: artists={seed_artists}, tracks={seed_tracks}, genres={seed_genres}")
+            
+            # Get recommendations
+            results = sp.recommendations(
+                seed_artists=seed_artists,
+                seed_tracks=seed_tracks,
+                seed_genres=seed_genres,
+                limit=limit
+            )
+            
+            if "tracks" in results and results["tracks"]:
+                return format_track_data(results["tracks"])
+            else:
+                raise Exception("No tracks returned from recommendations API")
+                
+        except Exception as rec_error:
+            # If recommendations API fails, use search fallback
+            print(f"Recommendation API error: {str(rec_error)}")
+            print("Falling back to direct search...")
+            
+            # Choose an artist to search
+            artist_name = random.choice(list(FAVORITE_ARTISTS.keys()))
+            keyword = random.choice(MOOD_MAPPINGS[mood])
+            
+            # Search for tracks
+            tracks = search_tracks_by_artist_and_keyword(sp, artist_name, keyword, limit)
+            
+            if tracks:
+                return format_track_data(tracks)
+            else:
+                print("Search returned no results, trying one more artist...")
+                
+                # Try with a different artist
+                artist_name = random.choice([a for a in list(FAVORITE_ARTISTS.keys()) if a != artist_name])
+                tracks = search_tracks_by_artist_and_keyword(sp, artist_name, keyword, limit)
+                
+                if tracks:
+                    return format_track_data(tracks)
     
     except Exception as e:
-        # Log the error for debugging
-        error_msg = f"Error fetching music recommendations: {str(e)}"
-        print(error_msg)
-        
-        # For specific Spotify API errors, handle them differently
-        if "http status: 401" in str(e) or "http status: 404" in str(e):
-            print("Authentication error: Please check your Spotify API credentials")
-            # Try a search instead as fallback
-            try:
-                # Try to search specifically for songs by favorite artists that match the mood
-                favorite_artists = list(FAVORITE_ARTISTS.values())
-                
-                # Use one of the artist names and a mood keyword for a more focused search
-                artist_name = random.choice(list(FAVORITE_ARTISTS.keys()))
-                keyword = random.choice(MOOD_MAPPINGS[mood])
-                
-                # Perform search
-                search_query = f"artist:{artist_name} {keyword}"
-                print(f"Performing fallback search with query: {search_query}")
-                results = sp.search(q=search_query, type="track", limit=limit)
-                tracks = results["tracks"]["items"]
-                
-                recommendations = []
-                for track in tracks:
-                    # Get the album image if available
-                    image_url = None
-                    if track["album"]["images"] and len(track["album"]["images"]) > 0:
-                        # Get medium-sized image if available, otherwise use the first one
-                        if len(track["album"]["images"]) > 1:
-                            image_url = track["album"]["images"][1]["url"]
-                        else:
-                            image_url = track["album"]["images"][0]["url"]
-                    
-                    # Get the artist name
-                    artist_name = track["artists"][0]["name"] if track["artists"] else "Unknown Artist"
-                    
-                    # Create a recommendation item
-                    recommendations.append({
-                        "name": track["name"],
-                        "artist": artist_name,
-                        "url": track["external_urls"]["spotify"] if "external_urls" in track and "spotify" in track["external_urls"] else "",
-                        "image_url": image_url,
-                        "preview_url": track.get("preview_url", None)
-                    })
-                
-                return recommendations
-            except Exception as inner_e:
-                print(f"Fallback search also failed: {str(inner_e)}")
-        
-        # Return an empty list in case of error
-        return []
+        print(f"Error getting music recommendations: {str(e)}")
+    
+    # Return some sample data in case all else fails
+    print("All recommendation methods failed, returning empty list")
+    return []

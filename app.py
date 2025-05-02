@@ -163,31 +163,37 @@ if st.session_state.detected_mood:
     st.markdown("<hr style='margin: 30px 0; height: 2px; background: linear-gradient(to right, #1DB954, #191414);'>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>Your Favorite Artists</h3>", unsafe_allow_html=True)
     
-    # Artist images and Spotify IDs - using more reliable image URLs
+    # Simple SVG colors for each artist as fallback - guaranteed to work
     artist_info = {
         "Taylor Swift": {
-            "image": "https://i.scdn.co/image/ab67616d00001e02fc8d2860cad9985cc72eb396", # Midnights album cover
-            "id": "06HL4z0CvFAxyc27GXpf02"
+            "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23dc143c'/%3E%3Ctext x='50%25' y='50%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white'%3ETS%3C/text%3E%3C/svg%3E",
+            "id": "06HL4z0CvFAxyc27GXpf02",
+            "color": "#dc143c"
         },
         "Selena Gomez": {
-            "image": "https://i.scdn.co/image/ab67616d00001e02e9b9b3cf5254a02b0b7c7f6a", # Revelación cover
-            "id": "0C8ZW7ezQVs4URX5aX7Kqx"
+            "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ff69b4'/%3E%3Ctext x='50%25' y='50%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white'%3ESG%3C/text%3E%3C/svg%3E",
+            "id": "0C8ZW7ezQVs4URX5aX7Kqx",
+            "color": "#ff69b4"
         },
         "Ed Sheeran": {
-            "image": "https://i.scdn.co/image/ab67616d00001e023b247c6cd4e4f4b3879e573c", # Equals album cover
-            "id": "6eUKZXaKkcviH0Ku9w2n3V"
+            "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ff7f50'/%3E%3Ctext x='50%25' y='50%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white'%3EES%3C/text%3E%3C/svg%3E",
+            "id": "6eUKZXaKkcviH0Ku9w2n3V",
+            "color": "#ff7f50"
         },
         "Justin Bieber": {
-            "image": "https://i.scdn.co/image/ab67616d00001e0299e3674fc4edc87f8c4c1eae", # Justice album cover
-            "id": "1uNFoZAHBGtllmzznpCI3s"
+            "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234169e1'/%3E%3Ctext x='50%25' y='50%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white'%3EJB%3C/text%3E%3C/svg%3E",
+            "id": "1uNFoZAHBGtllmzznpCI3s",
+            "color": "#4169e1"
         },
         "Alan Walker": {
-            "image": "https://i.scdn.co/image/ab67616d00001e02dd91c476aa94261350710de6", # Faded single cover
-            "id": "7vk5e3vY1uw9plTHJAMwjN"
+            "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23696969'/%3E%3Ctext x='50%25' y='50%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white'%3EAW%3C/text%3E%3C/svg%3E",
+            "id": "7vk5e3vY1uw9plTHJAMwjN",
+            "color": "#696969"
         },
         "The Weeknd": {
-            "image": "https://i.scdn.co/image/ab67616d00001e026ab4d48aecbe8c8f5a4e49cf", # Starboy album cover
-            "id": "1Xyo4u8uXC1ZmMpatF05PJ"
+            "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23800080'/%3E%3Ctext x='50%25' y='50%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white'%3ETW%3C/text%3E%3C/svg%3E",
+            "id": "1Xyo4u8uXC1ZmMpatF05PJ",
+            "color": "#800080"
         }
     }
     
@@ -196,20 +202,31 @@ if st.session_state.detected_mood:
     
     for i, artist in enumerate(featured_artists):
         with artist_cols[i]:
-            # Artist card with circular image
+            # Artist card with circular image and gradient border
+            color = artist_info[artist]['color']
             st.markdown(f"""
             <div style="text-align: center;">
                 <a href="https://open.spotify.com/artist/{artist_info[artist]['id']}" target="_blank">
-                    <img src="{artist_info[artist]['image']}" style="
-                        width: 80px; 
-                        height: 80px; 
-                        border-radius: 50%; 
-                        object-fit: cover;
-                        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                        margin-bottom: 10px;
+                    <div style="
+                        width: 90px;
+                        height: 90px;
+                        border-radius: 50%;
+                        padding: 4px;
+                        background: linear-gradient(45deg, {color}, #1DB954);
+                        margin: 0 auto;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                        transition: transform 0.3s;
                     ">
+                        <img src="{artist_info[artist]['image']}" style="
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            border: 2px solid white;
+                        ">
+                    </div>
                 </a>
-                <p style="font-weight: bold; margin: 5px 0 0 0; font-size: 14px;">{artist}</p>
+                <p style="font-weight: bold; margin: 10px 0 0 0; font-size: 15px; color: #333;">{artist}</p>
             </div>
             """, unsafe_allow_html=True)
 

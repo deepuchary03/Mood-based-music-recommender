@@ -11,7 +11,7 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Hide the Streamlit menu bar and make it transparent */
+  
     [data-testid="stToolbar"] {
         background-color: transparent !important;
         height: 0 !important;
@@ -24,7 +24,7 @@ st.markdown("""
         display: none;
     }
 
-    /* Set a consistent dark background for the entire app */
+ 
     .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stSidebarContent"] {
         background-color: #121212 !important;
         color: white !important;
